@@ -135,6 +135,7 @@ public:
     return *this;
   }
 };
+#ifdef LIBS
 Tag MakeCssLink(std::string href){ 
   return Tag("link").AddAtribute("href", href).AddAtribute("rel","stylesheet"); 
   }
@@ -152,7 +153,7 @@ Tag MakeFooter(std::string yearStart, std::string yearEnd, std::string name){
   std::string copystr = "&copy; " + yearStart +  " - " + yearEnd + " " + name + "all rights reserved"; 
   return Tag("footer","PAGE_FOOTER").AddTag(Tag("div").AddTag(Tag("p").SetContent(copystr).AddClass("small"))); 
 }
-#ifdef LIBS
+
 const auto UTF8 =  Tag("meta").AddAtribute("charset", "UTF-8" );
 const auto UTF16 = Tag("meta").AddAtribute("charset", "UTF-16" );
 /*
