@@ -86,7 +86,7 @@ class Tag{
       if(content.empty()){ 
         for(int t = 0; t< count; t++) {
           out << '\t';
-        };
+        }
       }
       out<< "</" << this->tagName << '>';   
     }
@@ -95,6 +95,7 @@ class Tag{
   //private members 
   std::vector<std::pair<std::string, std::string>> attributes;
   std::string Id;
+  Tag* parentTag = nullptr; 
   //the HTML spesifcation says that an element can only have one id so this dosn't need to be a vector. 
 std::vector<std::string> classes;
 //this is a vector of classes these are printed as a space sperated list as per the spesifcation. 
@@ -105,6 +106,9 @@ std::vector<std::string> classes;
   std::vector<Tag> childTags;
 //the children of the tag 
 public: 
+  auto GetName(){ 
+    return this->tagName; 
+  }
   Tag(std::string tn, std::string id = "\0" ){
     tagName = tn;
     Id      = id;
@@ -120,7 +124,9 @@ public:
     out<< this->content; 
   }
   void Print(std::ostream& out = std::cout,int count = 0){ 
-    
+    if(this->GetParentTag() != nullptr){ //prevent dereferanceing nullptr seg faults 
+    std::cout << "parent tag tagname " << (*GetParentTag()).GetName(); 
+      }
     this->PrintOpenTag(out, count);
     
     if(!this->childTags.empty()){ 
@@ -130,7 +136,12 @@ public:
       }
     this->PrintCloseTag(out, --count); 
   }
-  
+  void SetParent(Tag* t ){
+    this->parentTag = t;
+  }
+  Tag*  GetParentTag(){ 
+      return this->parentTag; 
+  }
   Tag  AddClass(std::string className){ 
     this->classes.push_back(className);
     return *this; 
@@ -140,6 +151,8 @@ public:
     return *this;
   }
   Tag  AddTag(Tag ChildTag){
+    auto t = ChildTag; 
+    t.SetParent(this);
     this->childTags.push_back(t);
     
     return *this; 
