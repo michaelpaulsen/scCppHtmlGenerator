@@ -16,20 +16,30 @@ std::string ToId(std::string s){
   }
   return id; 
 }
-class Tag{ 
+class Tag{
+  const std::string EmptyElements[10] = {
+  "area",
+  "base",
+  "br",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "col"
+ }; 
   bool isEmptyTag(){ 
     /*area, base, br, col, hr, img, input, link, meta, and param.*/
-    auto tg = this->tagName;  
-  return tg == "area" 
-      || tg == "base"
-      || tg == "br"
-      || tg == "hr"
-      || tg == "img"
-      || tg == "input"
-      || tg == "link"
-      || tg == "meta"
-      || tg == "param"
-      || tg == "col";
+   for(int x = 0; x<10; x++){ 
+      if(this->tagName == Tag::EmptyElements[x]){
+        return true; 
+      }
+     return false; 
+    }
+    return false; // this is faster by at least 1.5 times 
+    //something about the compiler being smarter than me 
+    //see: https://quick-bench.com/q/uPsblpoRZd1P86LtVqq_UMooMKA
   }
   void PrintClasses(std::ostream& out){ 
     if(!(this->classes.empty())){
@@ -82,6 +92,7 @@ class Tag{
     }
     out << '\n'; 
   }
+  //private members 
   std::vector<std::pair<std::string, std::string>> attributes;
   std::string Id;
   //the HTML spesifcation says that an element can only have one id so this dosn't need to be a vector. 
@@ -109,6 +120,7 @@ public:
     out<< this->content; 
   }
   void Print(std::ostream& out = std::cout,int count = 0){ 
+    
     this->PrintOpenTag(out, count);
     
     if(!this->childTags.empty()){ 
@@ -118,6 +130,7 @@ public:
       }
     this->PrintCloseTag(out, --count); 
   }
+  
   Tag  AddClass(std::string className){ 
     this->classes.push_back(className);
     return *this; 
@@ -127,7 +140,8 @@ public:
     return *this;
   }
   Tag  AddTag(Tag ChildTag){
-    this->childTags.push_back(ChildTag);
+    this->childTags.push_back(t);
+    
     return *this; 
   }
   Tag  SetContent(std::string c){
@@ -135,6 +149,8 @@ public:
     return *this;
   }
 };
+//end of class Tag 
+
 #ifdef LIBS
 Tag MakeCssLink(std::string href){ 
   return Tag("link").AddAtribute("href", href).AddAtribute("rel","stylesheet"); 
