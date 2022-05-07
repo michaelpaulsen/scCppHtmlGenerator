@@ -35,8 +35,7 @@ class Tag{
       if(this->tagName == Tag::EmptyElements[x]){
         return true; 
       }
-     return false; 
-    }
+     }
     return false; // this is faster by at least 1.5 times 
     //something about the compiler being smarter than me 
     //see: https://quick-bench.com/q/uPsblpoRZd1P86LtVqq_UMooMKA
@@ -154,12 +153,28 @@ public:
     auto t = ChildTag; 
     t.SetParent(this);
     this->childTags.push_back(t);
-    
     return *this; 
   }
   Tag  SetContent(std::string c){
     this->content = c;
     return *this;
+  }
+  void AddTag_v(Tag ChildTag){ 
+    auto t = ChildTag; 
+    t.SetParent(this);
+    this->childTags.push_back(t);
+    printf("start of loop\n");
+    for(auto &y :childTags){ 
+      if(y != 0){ 
+        printf("%p", &y);
+      }else{ 
+        printf("somthing whent wrong"); 
+      }
+    }
+    printf("\nend of loop \n\n");
+  }
+  auto GetTagName(){
+    return this->tagName; 
   }
 };
 //end of class Tag 
